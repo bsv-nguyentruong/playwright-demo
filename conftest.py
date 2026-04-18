@@ -10,3 +10,6 @@ def access_to_login_page(page):
     login_page = LoginPage(page)
     login_page.navigate(URL)
     return login_page
+
+from playwright.sync_api import Page
+
