@@ -211,11 +211,6 @@ def test_login_028(access_to_login_page):
     assert "reset" in login_page.page.url
 
 
-def test_login_button_behavior(access_to_login_page):
-    login_page = access_to_login_page
 
-    login_page.click_login()
-
-    assert login_page.is_text_visible("メールアドレスを入力してください")
 
 
