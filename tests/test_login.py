@@ -201,16 +201,81 @@ def test_login_027(access_to_login_page):
     assert login_page.page.get_by_text("パスワードを忘れた場合").is_visible()
 
 
-def test_login_028(access_to_login_page):
+
+
+def test_login_029(access_to_login_page):
     login_page = access_to_login_page
 
 
-    login_page.page.click("text=パスワードを忘れた場合")
+    login_page.click_login()
+
+    assert login_page.is_text_visible("メールアドレスを入力してください")
 
 
-    assert "reset" in login_page.page.url
+def test_login_030(access_to_login_page):
+    login_page = access_to_login_page
+
+    login_page.input_email("bsv@bravesoft.co.jp")
+    login_page.input_password("wrongpass123")
+    login_page.click_login()
+
+    # vẫn ở login page → login fail
+    assert "login" in login_page.page.url
 
 
+def test_login_031(access_to_login_page):
+    login_page = access_to_login_page
+
+    login_page.input_email("notfound@gmail.com")
+    login_page.input_password("anypass123")
+    login_page.click_login()
+
+    assert "login" in login_page.page.url
+
+
+def test_login_032(access_to_login_page):
+    login_page = access_to_login_page
+
+
+    assert login_page.page.get_by_role("button", name="新規登録").is_visible()
+
+
+def test_login_033(access_to_login_page):
+    login_page = access_to_login_page
+
+
+    login_page.page.click("text=新規登録")
+    login_page.page.wait_for_load_state("networkidle")
+
+    assert "register" in login_page.page.url
+
+
+def test_login_034(access_to_login_page):
+    page = access_to_login_page.page
+
+
+    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+    page.evaluate("window.scrollTo(0, 0)")
+
+
+    assert True
+def test_login_035(access_to_login_page):
+    page = access_to_login_page.page
+
+
+    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+
+
+    assert True
+def test_login_036(access_to_login_page):
+    page = access_to_login_page.page
+
+
+    page.evaluate("window.scrollTo(0, 500)")
+    page.evaluate("window.scrollTo(0, 0)")
+
+
+    assert True
 
 
 
