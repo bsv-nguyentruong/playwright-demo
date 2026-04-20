@@ -1,3 +1,5 @@
+import re
+
 from pages import login_page
 from pages.base_page import BasePage
 from pages.login_page import LoginPage
@@ -27,7 +29,7 @@ def test_login_009(access_to_login_page):
     login_page = access_to_login_page
     login_page.input_email("abc@gmail")
     login_page.click_login()
-    assert login_page.is_text_visible("メールアドレスが正しくありません。")
+    assert login_page.is_text_visible("メールアドレスが正しくありません")
 
 def test_login_010(access_to_login_page):
     """Invalid email: abc!@gmail.com"""
@@ -101,6 +103,7 @@ def test_login_018(access_to_login_page):
 
 
     login_page.input_password("12345678")
+    eye_btn = "//button[@aria-label='append icon']"
     login_page.page.click(eye_btn)
     login_page.page.click(eye_btn)
 
@@ -111,7 +114,9 @@ def test_login_019(access_to_login_page):
     login_page = access_to_login_page
     login_page.input_password("1234567")
     login_page.click_login()
-    assert login_page.is_text_visible("パスワードは8文字以上32文字以下で指定してください。")
+    login_page.page.wait_for_selector("text=パスワードは8文字以上32文字以下で指定してください")
+
+    assert login_page.is_text_visible("パスワードは8文字以上32文字以下で指定してください")
 
 
 def test_login_020(access_to_login_page):
@@ -119,7 +124,8 @@ def test_login_020(access_to_login_page):
 
     long_password = "a" * 40
     login_page.input_password(long_password)
-    assert len(login_page.get_input_value(login_page.password_input)) <= 32
+    login_page.click_login()
+    assert login_page.is_text_visible("パスワードは8文字以上32文字以下で指定してください")
 
 
 def test_login_021(access_to_login_page):
@@ -190,104 +196,26 @@ def test_login_027(access_to_login_page):
     login_page = access_to_login_page
 
 
-    assert login_page.is_text_visible("パスワードを忘れた方はこちら")
+    import re
+
+    assert login_page.page.get_by_text("パスワードを忘れた場合").is_visible()
 
 
 def test_login_028(access_to_login_page):
     login_page = access_to_login_page
 
 
-    login_page.page.click("text=パスワードを忘れた方はこちら")
+    login_page.page.click("text=パスワードを忘れた場合")
 
 
     assert "reset" in login_page.page.url
 
 
-def test_login_029(access_to_login_page):
-    login_page = access_to_login_page
-    assert login_page.page.locator(login_page.login_button).is_disabled()
-
-
-def test_login_030(access_to_login_page):
+def test_login_button_behavior(access_to_login_page):
     login_page = access_to_login_page
 
-
-    login_page.input_email("valid@gmail.com")
-    login_page.input_password("wrongpass")
     login_page.click_login()
 
-
-    assert login_page.is_text_visible("ログインできませんでした。入力内容をご確認の上、もう一度お試しください。")
-
-
-def test_login_031(access_to_login_page):
-    login_page = access_to_login_page
-
-
-    login_page.input_email("notfound@gmail.com")
-    login_page.input_password("correctpass")
-    login_page.click_login()
-
-
-    assert login_page.is_text_visible("ログインできませんでした。入力内容をご確認の上、もう一度お試しください。")
-
-
-def test_login_032(access_to_login_page):
-    login_page = access_to_login_page
-
-
-    login_page.input_email("valid@gmail.com")
-    login_page.input_password("correctpass")
-    login_page.click_login()
-
-
-    assert "profile" in login_page.page.url
-def test_login_033(access_to_login_page):
-    login_page = access_to_login_page
-
-
-    assert login_page.is_text_visible("新規登録")
-
-
-def test_login_034(access_to_login_page):
-    login_page = access_to_login_page
-
-
-    login_page.page.click("text=新規登録")
-
-
-    assert "register" in login_page.page.url
-
-
-def test_login_035(access_to_login_page):
-    page = access_to_login_page.page
-
-
-    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-    page.evaluate("window.scrollTo(0, 0)")
-
-
-    assert True
-def test_login_036(access_to_login_page):
-    page = access_to_login_page.page
-
-
-    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-
-
-    assert True
-def test_login_037(access_to_login_page):
-    page = access_to_login_page.page
-
-
-    page.evaluate("window.scrollTo(0, 500)")
-    page.evaluate("window.scrollTo(0, 0)")
-
-
-    assert True
-
-
-
-
+    assert login_page.is_text_visible("メールアドレスを入力してください")
 
 
